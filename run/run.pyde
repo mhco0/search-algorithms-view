@@ -15,17 +15,18 @@ def setup():
     grid = Grid(16)
     grid.buildMap(7.0, 2)
     frameRate(FRAME_RATE)
+    frame_cnt = 0
     phase = WAITING
     vehicle = grid.walkablePosition()
     food = grid.walkablePosition()
 
 def draw():
-    global phase, grid, vehicle, food, pathfindingFunc, pathfindingCtx, distance, path
+    global phase, grid, vehicle, food, pathfindingFunc, pathfindingCtx, distance, path, frame_cnt
     if phase == WAITING:
         print("WAITING")
     elif phase == ALGORITHM_CHOOSE:
         print("CHOOSING")
-        pathfindingFunc = lambda ctx : Pathfinding.dijkstra(grid, vehicle, ctx)
+        pathfindingFunc = lambda ctx : Pathfinding.a_star(grid, vehicle, food, ctx)
         pathfindingCtx = None
         phase = SEARCH
     elif phase == SEARCH:
@@ -33,16 +34,23 @@ def draw():
         if grid.wasSeen(food):
             pathfindingCtx = None
             (distance, path) = grid.getPath(vehicle, food)
+            frame_cnt = 60
             phase = GO
         else:
             pathfindingCtx = pathfindingFunc(pathfindingCtx)
     elif phase == GO:
         print("GO!")
         print(distance)
-        phase = WAITING
+        if (frame_cnt < 0):
+            phase = WAITING
+        else:
+            frame_cnt -= 1
     
     grid.display()
     grid.displayCell(vehicle, color(255,0,255))
+    if (phase == GO):
+        for p in path:
+            grid.displayCell(p, color(255,0,255, 60))
     grid.displayCell(food, color(255,0,0))
 def keyPressed():
     global phase
