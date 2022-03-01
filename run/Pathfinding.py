@@ -40,7 +40,7 @@ class Pathfinding:
 
     sz = len(bfs_q)
     while sz > 0:
-      v = bfs_q.pop()
+      v = bfs_q.popleft()
       sz -= 1
       for u in grid.adjacent(v):
         if not grid.wasSeen(u):

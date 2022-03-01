@@ -1,9 +1,14 @@
 import random
-sand = color(167, 152, 118)  
+sand = color(230, 230, 179)
 water = color(140, 191, 217)  
-swamp = color(230, 230, 179)  
+swamp = color(167, 152, 118)  
 wall = color(90, 90, 90)  
 inf = int(1e9+7)
+
+SAND = 1
+SWAMP = 5
+WATER = 10
+WALL = inf
 
 class Grid:
   def __init__(self, cellSize):
@@ -21,15 +26,15 @@ class Grid:
         yoff = float(j) / self.shape[1]
         result = noise(xoff * noiseScale, yoff * noiseScale)
         if (result <= 0.4):
-          self.world[i][j] = 0
+          self.world[i][j] = SAND
         elif (result <= 0.45):
-          self.world[i][j] = 3
+          self.world[i][j] = WALL
         elif (result <= 0.65):
-          self.world[i][j] = 1
+          self.world[i][j] = SWAMP
         elif (result <= 0.7):
-          self.world[i][j] = 3
+          self.world[i][j] = WALL
         else:
-          self.world[i][j] = 2
+          self.world[i][j] = WATER
   
   def reset(self):
     for i in range(self.shape[0]):
@@ -63,7 +68,7 @@ class Grid:
     return p[0] >= 0 and p[1] >= 0 and p[0] < self.shape[0] and p[1] < self.shape[1]
   
   def is_walkable(self, p):
-    return self.world[p[0]][p[1]] < 3
+    return self.world[p[0]][p[1]] != WALL
   def walkablePosition(self):
     pos = (0, 0)
     while True:
@@ -98,11 +103,11 @@ class Grid:
     for i in range(self.shape[0]):
       for j in range(self.shape[1]):
         p = (i, j)
-        if (self.world[i][j] == 0):
+        if (self.world[i][j] == SAND):
           self.displayCell(p, sand)
-        elif (self.world[i][j] == 1):
+        elif (self.world[i][j] == SWAMP):
           self.displayCell(p, swamp)
-        elif (self.world[i][j] == 2):
+        elif (self.world[i][j] == WATER):
           self.displayCell(p, water)
         else:
           self.displayCell(p, wall)

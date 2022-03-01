@@ -7,7 +7,7 @@ SHOW_PATH = 2
 GO = 3
 WAITING = 4
 
-FRAME_RATE = 4
+FRAME_RATE = 30
 
 def setup():
     global phase, grid, vehicle, food, frame_cnt
@@ -25,7 +25,7 @@ def draw():
         print("WAITING")
     elif phase == ALGORITHM_CHOOSE:
         print("CHOOSING")
-        pathfindingFunc = lambda ctx : Pathfinding.bfs(grid, vehicle, ctx)
+        pathfindingFunc = lambda ctx : Pathfinding.dijkstra(grid, vehicle, ctx)
         pathfindingCtx = None
         phase = SEARCH
     elif phase == SEARCH:
@@ -40,9 +40,10 @@ def draw():
         print("GO!")
         print(distance)
         phase = WAITING
-        
+    
     grid.display()
-
+    grid.displayCell(vehicle, color(255,0,255))
+    grid.displayCell(food, color(255,0,0))
 def keyPressed():
     global phase
     if key.lower() == 'p':
