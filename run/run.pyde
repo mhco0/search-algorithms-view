@@ -34,17 +34,15 @@ def draw():
         if grid.wasSeen(food):
             pathfindingCtx = None
             (distance, path) = grid.getPath(vehicle, food)
-            frame_cnt = 60
+            frame_cnt = frameCount
             phase = GO
         else:
             pathfindingCtx = pathfindingFunc(pathfindingCtx)
     elif phase == GO:
         print("GO!")
         print(distance)
-        if (frame_cnt < 0):
+        if (frameCount - frame_cnt == 60):
             phase = WAITING
-        else:
-            frame_cnt -= 1
     
     grid.display()
     grid.displayCell(vehicle, color(255,0,255))
