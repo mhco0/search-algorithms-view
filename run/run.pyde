@@ -1,3 +1,4 @@
+import random
 from Grid import Grid
 from Pathfinding import Pathfinding
 
@@ -13,7 +14,7 @@ def setup():
     global phase, grid, vehicle, food, frame_cnt
     size(800, 640)
     grid = Grid(16)
-    grid.buildMap(7.0, 2)
+    grid.buildMap(10.0, random.randint(0, 100))
     frameRate(FRAME_RATE)
     frame_cnt = 0
     phase = WAITING

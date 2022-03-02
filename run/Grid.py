@@ -20,20 +20,21 @@ class Grid:
   
   def buildMap (self, noiseScale, seed):
     noiseSeed(seed)
+    noiseDetail(8)
     for i in range(self.shape[0]):
       for j in range(self.shape[1]):
         xoff = float(i) / self.shape[0]
         yoff = float(j) / self.shape[1]
         result = noise(xoff * noiseScale, yoff * noiseScale)
-        if (result <= 0.4):
-          self.world[i][j] = SAND
-        elif (result <= 0.45):
+        if (result <= 0.3):
+          self.world[i][j] = WATER
+        elif (result <= 0.4):
           self.world[i][j] = WALL
+        elif (result <= 0.55):
+          self.world[i][j] = SAND
         elif (result <= 0.65):
           self.world[i][j] = SWAMP
-        elif (result <= 0.7):
-          self.world[i][j] = WALL
-        else:
+        else :
           self.world[i][j] = WATER
   
   def reset(self):
