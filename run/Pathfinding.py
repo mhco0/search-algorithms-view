@@ -75,7 +75,7 @@ class Pathfinding:
           grid.setParent(u, v)
           heappush(heap_q, ((pF(u), u)))
       break
-    return (heap_q, v)
+    return (heap_q, lastVis)
 
   @staticmethod
   def heuristic(a, b):
