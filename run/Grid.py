@@ -15,7 +15,9 @@ class Grid:
     self.cellSize = cellSize
     self.shape = (width//cellSize, height//cellSize)
     self.world = [[0 for x in range(self.shape[1])] for y in range(self.shape[0])] 
-    self.seen = [[0 for x in range(self.shape[1])] for y in range(self.shape[0])] 
+    self.seen = [[False for x in range(self.shape[1])] for y in range(self.shape[0])]
+    self.visited = [[False for x in range(self.shape[1])] for y in range(self.shape[0])]
+    self.dist = [[0 for x in range(self.shape[1])] for y in range(self.shape[0])]
     self.parent = [[None for x in range(self.shape[1])] for y in range(self.shape[0])]
   
   def buildMap (self, noiseScale, seed):
@@ -40,15 +42,22 @@ class Grid:
   def reset(self):
     for i in range(self.shape[0]):
       for j in range(self.shape[1]):
-        self.seen[i][j] = inf
+        self.seen[i][j] = False
+        self.visited[i][j] = False
+        self.dist[i][j] = inf
   def see(self, p):
-    self.seen[p[0]][p[1]] = 1
-  def seeW(self, p):
-    self.seen[p[0]][p[1]] = self.world[p[0]][p[1]]
-  def seeD(self, p, w):
-    self.seen[p[0]][p[1]] = w
+    self.seen[p[0]][p[1]] = True
+  def visit(self, p):
+    self.visited[p[0]][p[1]] = True
   def wasSeen(self, p):
-    return self.seen[p[0]][p[1]] not in [0, inf]
+    return self.seen[p[0]][p[1]]
+  def wasVisited(self, p):
+    return self.visited[p[0]][p[1]]
+
+  def setDistW(self, p):
+    self.dist[p[0]][p[1]] = self.world[p[0]][p[1]]
+  def setDist(self, p, w):
+    self.dist[p[0]][p[1]] = w
 
   def setParent(self, p, par):
     self.parent[p[0]][p[1]] = par
@@ -74,7 +83,7 @@ class Grid:
     pos = (0, 0)
     while True:
       pos = (random.randint(0, self.shape[0]-1), random.randint(0, self.shape[1]-1))
-      if (self.is_walkable(pos)):
+      if (self.is_walkable(pos) and self.world[pos[1]][pos[1]] != WATER):
         return pos
   
   def adjacent(self, p):
@@ -99,6 +108,21 @@ class Grid:
     noStroke()
     fill(cellColor)
     rect(p[0] * self.cellSize, p[1] * self.cellSize, self.cellSize, self.cellSize)
+  def highlightCell(self, p, borderColor):
+    stroke(borderColor)
+    strokeWeight(2);
+    noFill()
+    rect(p[0] * self.cellSize, p[1] * self.cellSize, self.cellSize, self.cellSize)
+  
+  def displaySeen(self):
+    for i in range(self.shape[0]):
+      for j in range(self.shape[1]):
+        p = (i, j)
+        if (self.wasVisited(p)):
+          self.displayCell(p, color(220,20,60, 50))
+        elif self.wasSeen (p):
+          self.displayCell(p, color(220,20,60,99))
+          self.highlightCell(p, color(220,20,60))
   
   def display(self):
     for i in range(self.shape[0]):
@@ -112,5 +136,3 @@ class Grid:
           self.displayCell(p, water)
         else:
           self.displayCell(p, wall)
-        if self.wasSeen (p):
-          self.displayCell(p, color(0, 38, 219, 60))

@@ -22,35 +22,45 @@ def setup():
     food = grid.walkablePosition()
 
 def draw():
-    global phase, grid, vehicle, food, pathfindingFunc, pathfindingCtx, distance, path, frame_cnt
+    global phase, grid, vehicle, food, pathfindingFunc, pathfindingCtx, optimal_distance, optimal_path, distance, path, frame_cnt
     if phase == WAITING:
         print("WAITING")
+        path = []
     elif phase == ALGORITHM_CHOOSE:
         print("CHOOSING")
         pathfindingFunc = lambda ctx : Pathfinding.a_star(grid, vehicle, food, ctx)
         pathfindingCtx = None
         phase = SEARCH
+        while not grid.wasVisited(food):
+            (pathfindingCtx, _) = Pathfinding.dijkstra(grid, vehicle, pathfindingCtx)
+        (optimal_distance, optimal_path) = grid.getPath(vehicle, food)
+        distance = 0
+        pathfindingCtx = None
+        grid.reset()
     elif phase == SEARCH:
         print("SEARCHING")
-        if grid.wasSeen(food):
+        if grid.wasVisited(food):
             pathfindingCtx = None
             (distance, path) = grid.getPath(vehicle, food)
             frame_cnt = frameCount
             phase = GO
         else:
-            pathfindingCtx = pathfindingFunc(pathfindingCtx)
+            (pathfindingCtx, lastVis) = pathfindingFunc(pathfindingCtx)
+            (distance, path) = grid.getPath(vehicle, lastVis)
     elif phase == GO:
         print("GO!")
-        print(distance)
         if (frameCount - frame_cnt == 60):
             phase = WAITING
     
     grid.display()
-    grid.displayCell(vehicle, color(255,0,255))
-    if (phase == GO):
+    grid.displaySeen()
+    grid.displayCell(vehicle, color(220,20,60))
+    if (phase == GO or phase == SEARCH):
+        textSize(25);
+        text("Distance {}/{}".format(distance,optimal_distance), 25, 25)
         for p in path:
-            grid.displayCell(p, color(255,0,255, 60))
-    grid.displayCell(food, color(255,0,0))
+            grid.displayCell(p, color(138,43,226,90))
+    grid.displayCell(food, color(138,43,226))
 def keyPressed():
     global phase
     if key.lower() == 'p':

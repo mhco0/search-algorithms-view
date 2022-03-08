@@ -13,6 +13,7 @@ class Pathfinding:
 
     while len(dfs_s) > 0:
       v = dfs_s.pop()
+      grid.visit(v)
       pop = True
       adjList = grid.adjacent(v)
       # random.shuffle(adjList)
@@ -41,6 +42,7 @@ class Pathfinding:
     sz = len(bfs_q)
     while sz > 0:
       v = bfs_q.popleft()
+      grid.visit(v)
       sz -= 1
       for u in grid.adjacent(v):
         if not grid.wasSeen(u):
@@ -54,29 +56,36 @@ class Pathfinding:
     if heap_q is None:
       heap_q = []
       grid.reset()
-      grid.seeW(src)
+      grid.see(src)
+      grid.setDistW(src)
       heappush(heap_q, ((pF(src), src)))
-      return heap_q
+      return (heap_q, src)
+    lastVis = src
     while len(heap_q) > 0:
       (d, v) = heappop(heap_q)
+      if (grid.wasVisited(v)):
+          continue
+      lastVis = v
+      grid.visit(v)
       for u in grid.adjacent(v):
-        cur_d = grid.seen[v[0]][v[1]] + grid.world[u[0]][u[1]]
-        if cur_d < grid.seen[u[0]][u[1]]:
-          grid.seeD(u, cur_d)
+        cur_d = grid.dist[v[0]][v[1]] + grid.world[u[0]][u[1]]
+        if cur_d < grid.dist[u[0]][u[1]]:
+          grid.see(u)
+          grid.setDist(u, cur_d)
           grid.setParent(u, v)
           heappush(heap_q, ((pF(u), u)))
       break
-    return heap_q
+    return (heap_q, lastVis)
 
   @staticmethod
   def heuristic(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
   @staticmethod
   def dijkstra (grid, src, heap_q):
-    return Pathfinding.nextStep (grid, src, lambda pos : grid.seen[pos[0]][pos[1]], heap_q)
+    return Pathfinding.nextStep (grid, src, lambda pos : grid.dist[pos[0]][pos[1]], heap_q)
   @staticmethod
   def greedy (grid, src, dest, heap_q):
     return Pathfinding.nextStep (grid, src, lambda pos : Pathfinding.heuristic(dest, pos), heap_q)
   @staticmethod
   def a_star (grid, src, dest, heap_q):
-    return Pathfinding.nextStep (grid, src, lambda pos : grid.seen[pos[0]][pos[1]] + Pathfinding.heuristic(dest, pos), heap_q)
+    return Pathfinding.nextStep (grid, src, lambda pos : grid.dist[pos[0]][pos[1]] + Pathfinding.heuristic(dest, pos), heap_q)
