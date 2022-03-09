@@ -43,11 +43,17 @@ def draw():
         path = []
     elif phase == Phase.ALGORITHM_CHOOSE_MOUSE:
         selected_option = interface.clicked_option((mouseX, mouseY))
-        phase = Phase.ALGORITHM_CHOOSED
+        if selected_option:
+            phase = Phase.ALGORITHM_CHOOSED
+        else:
+            phase = Phase.WAITING
     elif phase == Phase.ALGORITHM_CHOOSE_KEYBOARD:
         str_key = str(key)
         selected_option = interface.binded_option(str_key)
-        phase = Phase.ALGORITHM_CHOOSED
+        if selected_option:
+            phase = Phase.ALGORITHM_CHOOSED
+        else:
+            phase = Phase.WAITING
     elif phase == Phase.ALGORITHM_CHOOSED:
         print("CHOOSED")
         
