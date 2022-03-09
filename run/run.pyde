@@ -11,6 +11,9 @@ class Phase:
   ALGORITHM_CHOOSED = 3
   SEARCH = 4
   GO = 5
+  WALK = 6
+  RESPAWN_FOOD = 7
+  
 
 
 FRAME_RATE = 30
@@ -81,16 +84,34 @@ def draw():
     elif phase == Phase.GO:
         print("GO!")
         if (frameCount - frame_cnt == 60):
-            phase = Phase.WAITING
+            grid.reset()
+            phase = Phase.WALK
+    elif phase == Phase.WALK:
+        if frameCount % 3 == 0:
+            if len(path) == 1:
+                label.add_food()
+                frame_cnt = frameCount
+            if len(path):
+                vehicle = path[-1]
+                path.pop()
+            if (frameCount - frame_cnt == 60):
+                frame_cnt = frameCount
+                grid.reset()
+                phase = Phase.RESPAWN_FOOD
+    elif phase == Phase.RESPAWN_FOOD:
+        if (frameCount - frame_cnt == 60):
+            food = grid.walkablePosition()
+            phase = Phase.ALGORITHM_CHOOSED
+                
     grid.display()
     grid.displaySeen()
-    grid.displayCell(vehicle, color(220,20,60))
     if (phase == Phase.GO or phase == Phase.SEARCH):
         textSize(25);
         text("{} {}/{}".format(selected_algorithm, distance,optimal_distance), 0, 40)
         for p in path:
             grid.displayCell(p, color(138,43,226,90))
     grid.displayCell(food, color(138,43,226))
+    grid.displayCell(vehicle, color(220,20,60))
     label.display()
     if phase != Phase.SEARCH:
         sidebar.display(sidebar_pos)
