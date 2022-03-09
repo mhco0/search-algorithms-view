@@ -27,11 +27,17 @@ def draw():
     global phase, grid, vehicle, food, pathfindingFunc, pathfindingCtx, distance, path, frame_cnt, foodcount
     if phase == WAITING:
         print("WAITING")
+        grid.display()
+        grid.displayCell(vehicle, color(255,0,255))
+        grid.displayCell(food, color(255,0,0)) 
     elif phase == ALGORITHM_CHOOSE:
         print("CHOOSING")
         pathfindingFunc = lambda ctx : Pathfinding.a_star(grid, vehicle, food, ctx)
         pathfindingCtx = None
         phase = SEARCH
+        grid.display()
+        grid.displayCell(vehicle, color(255,0,255))
+        grid.displayCell(food, color(255,0,0))
     elif phase == SEARCH:
         print("SEARCHING")
         if grid.wasSeen(food):
@@ -41,10 +47,21 @@ def draw():
             phase = GO
         else:
             pathfindingCtx = pathfindingFunc(pathfindingCtx)
+        grid.display()
+        grid.displayCell(vehicle, color(255,0,255))
+        grid.displayCell(food, color(255,0,0))
     elif phase == GO:
         print("GO!")
         print(distance)
+        print(path)
+        grid.display()
+        grid.displayCell(vehicle, color(255,0,255))
         frame_cnt = frameCount
+        for p in path:
+            grid.displayCell(p, color(255,0,255, 60))
+        if (frameCount - frame_cnt >= 120):
+            phase = WALK
+        grid.displayCell(food, color(255,0,0))
     
     elif phase == WALK:
         frame_cnt = frameCount
@@ -61,14 +78,14 @@ def draw():
                 food = grid.walkablePosition()
                 phase = ALGORITHM_CHOOSE
     
-    grid.display()
-    grid.displayCell(vehicle, color(255,0,255))
-    if (phase == GO):
-        for p in path:
-            grid.displayCell(p, color(255,0,255, 60))
-        if (frameCount - frame_cnt >= 120):
-            phase = WALK
-    grid.displayCell(food, color(255,0,0))
+    #grid.display()
+    #grid.displayCell(vehicle, color(255,0,255))
+    #if (phase == GO):
+    #    for p in path:
+    #        grid.displayCell(p, color(255,0,255, 60))
+    #    if (frameCount - frame_cnt >= 120):
+    #        phase = WALK
+    #grid.displayCell(food, color(255,0,0))
 def keyPressed():
     global phase
     if key.lower() == 'p':
