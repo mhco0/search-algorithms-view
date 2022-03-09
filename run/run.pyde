@@ -26,6 +26,7 @@ def setup():
     grid.buildMap(10.0, random.randint(0, 100))
     frameRate(FRAME_RATE)
     frame_cnt = 0
+    
     phase = Phase.WAITING
     vehicle = grid.walkablePosition()
     food = grid.walkablePosition()
