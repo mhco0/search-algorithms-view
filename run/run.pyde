@@ -88,12 +88,13 @@ def draw():
     grid.displayCell(vehicle, color(220,20,60))
     if (phase == GO or phase == SEARCH):
         textSize(25);
-        text("Distance {}/{}".format(distance,optimal_distance), 25, 25)
+        text("Distance {}/{}".format(distance,optimal_distance), 0, 40)
         for p in path:
             grid.displayCell(p, color(138,43,226,90))
     grid.displayCell(food, color(138,43,226))
     label.display()
-    interface.display()
+    if phase != SEARCH:
+        interface.display()
     
 def keyPressed():
     global phase
