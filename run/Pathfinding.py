@@ -43,12 +43,9 @@ class Pathfinding:
       grid.see(src)
       return (bfs_q, src)
 
-    last_vis = None
-
     sz = len(bfs_q)
     while sz > 0:
       v = bfs_q.popleft()
-      last_vis = v
       grid.visit(v)
       sz -= 1
       for u in grid.adjacent(v):
@@ -56,7 +53,7 @@ class Pathfinding:
           grid.see(u)
           grid.setParent(u, v)
           bfs_q.append(u)
-    return (bfs_q, last_vis)
+    return (bfs_q, src)
   
   @staticmethod
   def nextStep (grid, src, pF, heap_q):
