@@ -12,7 +12,7 @@ class Interface:
         self.keyboard_keys = keyboard_keys
         
         self.radius = 5
-        self.color = color(64, 64, 64)
+        self.color = color(64, 64, 64, 225)
         self.text_size = 16
         self.text_padding = 8
         self.text_color = color(255, 255, 255)
@@ -27,8 +27,8 @@ class Interface:
         prev_word_width = self.x
         
         for i in range(len(self.options)):
-            keyboard_key_text = "(" + self.keyboard_keys[i] + ")"
-            text(keyboard_key_text, prev_word_width + ((textWidth(self.options[i]) - textWidth(keyboard_key_text)) // 2), self.y + self.text_size)
+            # keyboard_key_text = "(" + self.keyboard_keys[i] + ")"
+            # text(keyboard_key_text, prev_word_width + ((textWidth(self.options[i]) - textWidth(keyboard_key_text)) // 2), self.y + self.text_size)
             text(self.options[i], prev_word_width, self.y + 2 * self.text_size)
             prev_word_width += textWidth(self.options[i]) + self.text_padding
      
@@ -43,7 +43,7 @@ class Interface:
         for i in range(len(self.options)):
             x0 = prev_word_width
             x1 = prev_word_width + textWidth(self.options[i])
-            if (pos[0] >= x0 and pos[0] <= x1 and pos[1] >= self.y and pos[1] <= self.y + 2 * self.text_size):
+            if (pos[0] >= x0 and pos[0] <= x1 and pos[1] >= self.y and pos[1] <= self.y + self.height):
                 return self.options[i]
             prev_word_width = x1 + self.text_padding
         return ""

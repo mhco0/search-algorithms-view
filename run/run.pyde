@@ -33,7 +33,7 @@ def setup():
     vehicle = grid.walkablePosition()
     food = grid.walkablePosition()
     label = FoodLabel(0, 0, "Comidas: ")
-    interface = Interface(width // 2 - INTERFACE_WIDTH // 2 , height - INTERFACE_HEIGHT, INTERFACE_WIDTH, INTERFACE_HEIGHT, ["DFS", "BFS", "DIJKSTRA", "GREEDY",  "A*", "GA"], ["1", "2", "3", "4", "5", "6"])
+    interface = Interface((width - INTERFACE_WIDTH) // 2 , height - 3*INTERFACE_HEIGHT//2, INTERFACE_WIDTH, INTERFACE_HEIGHT, ["DFS", "BFS", "DIJKSTRA", "GREEDY",  "A*", "GA"], ["1", "2", "3", "4", "5", "6"])
 
 def draw():
     global phase, grid, vehicle, food, pathfindingFunc, pathfindingCtx, optimal_distance, optimal_path, distance, path, frame_cnt, selected_option
@@ -100,7 +100,7 @@ def draw():
     grid.displayCell(vehicle, color(220,20,60))
     if (phase == Phase.GO or phase == Phase.SEARCH):
         textSize(25);
-        text("Distance {}/{}".format(distance,optimal_distance), 0, 40)
+        text("{} {}/{}".format(selected_option, distance,optimal_distance), 0, 40)
         for p in path:
             grid.displayCell(p, color(138,43,226,90))
     grid.displayCell(food, color(138,43,226))
