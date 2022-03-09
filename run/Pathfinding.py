@@ -1,5 +1,6 @@
 from collections import deque
 from heapq import heappush, heappop
+import random
 
 class Pathfinding:
   @staticmethod
@@ -9,14 +10,17 @@ class Pathfinding:
       grid.reset()
       dfs_s.append(src)
       grid.see(src)
-      return dfs_s
+      return (dfs_s, src)
+
+    last_vis = None
 
     while len(dfs_s) > 0:
       v = dfs_s.pop()
+      last_vis = v
       grid.visit(v)
       pop = True
       adjList = grid.adjacent(v)
-      # random.shuffle(adjList)
+      random.shuffle(adjList)
       for u in adjList:
         if not grid.wasSeen(u):
           if pop:
@@ -28,7 +32,7 @@ class Pathfinding:
           break
       if not pop:
         break
-    return dfs_s
+    return (dfs_s, last_vis)
 
   @staticmethod
   def bfs (grid, src, bfs_q):
@@ -37,11 +41,14 @@ class Pathfinding:
       grid.reset()
       bfs_q.append(src)
       grid.see(src)
-      return bfs_q
+      return (bfs_q, src)
+
+    last_vis = None
 
     sz = len(bfs_q)
     while sz > 0:
       v = bfs_q.popleft()
+      last_vis = v
       grid.visit(v)
       sz -= 1
       for u in grid.adjacent(v):
@@ -49,7 +56,7 @@ class Pathfinding:
           grid.see(u)
           grid.setParent(u, v)
           bfs_q.append(u)
-    return bfs_q
+    return (bfs_q, last_vis)
   
   @staticmethod
   def nextStep (grid, src, pF, heap_q):
