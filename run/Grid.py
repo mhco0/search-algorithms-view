@@ -114,3 +114,6 @@ class Grid:
           self.displayCell(p, wall)
         if self.wasSeen (p):
           self.displayCell(p, color(0, 38, 219, 60))
+          
+    #def walkTo(self):
+        
