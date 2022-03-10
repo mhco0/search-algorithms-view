@@ -13,8 +13,6 @@ class Phase:
   GO = 5
   WALK = 6
   RESPAWN_FOOD = 7
-  
-
 
 FRAME_RATE = 30
 
@@ -47,7 +45,9 @@ def draw():
         path = []
     elif phase == Phase.ALGORITHM_CHOOSED:
         # print("CHOOSED")
-        selected_algorithm = sidebar.clicked(sidebar_pos, (mouseX, mouseY)).text
+        btn_clicked = sidebar.clicked(sidebar_pos, (mouseX, mouseY))
+        if btn_clicked:
+            selected_algorithm = btn_clicked.text
         pathfindingFunc = lambda ctx : Pathfinding.a_star(grid, vehicle, food, ctx)
         if selected_algorithm == "DFS":
             pathfindingFunc = lambda ctx: Pathfinding.dfs(grid, vehicle, ctx)
@@ -73,7 +73,7 @@ def draw():
         grid.reset()
     elif phase == Phase.SEARCH:
         # print("SEARCHING")
-        if grid.wasVisited(food):
+        if grid.wasSeen(food):
             pathfindingCtx = None
             (distance, path) = grid.getPath(vehicle, food)
             frame_cnt = frameCount
@@ -113,17 +113,16 @@ def draw():
     grid.displayCell(food, color(138,43,226))
     grid.displayCell(vehicle, color(220,20,60))
     label.display()
-    if phase != Phase.SEARCH:
+    if phase != Phase.WALK:
         sidebar.display(sidebar_pos)
-    
+
 def keyPressed():
     global phase
-    
     str_key = str(key)
-    
-    if str_key.lower() in interface.keys_binded():
-        phase = Phase.ALGORITHM_CHOOSE_KEYBOARD
+    if str_key.lower() == 'p' and phase != Phase.WALK:
+        phase = Phase.WAITING
+
 def mouseClicked():
   global phase, sidebar, sidebar_pos
-  if phase == Phase.WAITING and sidebar.clicked(sidebar_pos, (mouseX, mouseY)):
+  if phase != Phase.WALK and sidebar.clicked(sidebar_pos, (mouseX, mouseY)):
     phase = Phase.ALGORITHM_CHOOSED
