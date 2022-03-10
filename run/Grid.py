@@ -103,6 +103,9 @@ class Grid:
       dst = self.parent[dst[0]][dst[1]]
     path.append(src)
     return (dist, path)
+  
+  def cellCenter(self, pos):
+    return PVector((pos[0] + 0.5)*self.cellSize,  (pos[1] + 0.5)*self.cellSize)
 
   def displayCell(self, p, cellColor):
     noStroke()
